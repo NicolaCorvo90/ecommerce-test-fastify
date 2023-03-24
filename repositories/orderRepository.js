@@ -1,16 +1,18 @@
+const uuid = require('uuid');
 const Order = require('../models/order');
 
 const orderRepository = {
-    findAll: () => {
-        return Order.find();
+    findAll: async () => {
+        return await Order.scan().exec();
     },
-    save: (order) => {
+    save: async (order) => {
         if(order) {
             var order = new Order({
+                id: uuid.v4(),
                 userId: order.userId,
                 products: order.products
             })
-            return order.save();
+            return await order.save();
         } else {
             throw new Error("Invalid order");
         }

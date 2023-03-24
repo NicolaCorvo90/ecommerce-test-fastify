@@ -1,6 +1,10 @@
-const {default: mongoose } = require('mongoose');
+const dynamoose = require('dynamoose');
 
-const productSchema = new mongoose.Schema({
+const productSchema = new dynamoose.Schema({
+    id: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: true,
@@ -24,5 +28,5 @@ const productSchema = new mongoose.Schema({
     }
 })
 
-const Product = mongoose.model("product", productSchema);
+const Product = dynamoose.model("ecommerce-test-products", productSchema);
 module.exports = Product;

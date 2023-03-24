@@ -9,14 +9,14 @@ const cartRoutes = (fastify, option, done) => {
                 return;
             }
 
-            if(!request.user_id) {
+            if(!request.userid) {
                 reply.code(500).send();
                 return;
             }
         
             const { productId, quantity } = request.body;
 
-            if(await userService.addProductToCart(request.user_id, productId, quantity)) {
+            if(await userService.addProductToCart(request.userid, productId, quantity)) {
                 reply.code(201).send();
             } else {
                 reply.code(400).send();

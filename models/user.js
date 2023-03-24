@@ -1,6 +1,10 @@
-const {default: mongoose } = require('mongoose');
+const dynamoose = require('dynamoose');
 
-const userSchema = new mongoose.Schema({
+const userSchema = new dynamoose.Schema({
+    id: {
+        type: String,
+        required: true
+    },
     username: {
         type: String,
         required: true,
@@ -15,20 +19,18 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    cart:   [
-                {
-                    productId: {
-                        type: mongoose.Schema.Types.ObjectId,
-                        require: true
-                    },
-                    quantity: {
-                        type: Number,
-                        require: true
-                    }
-                }
-            ]
+    cart:{
+        type: Array,
+        schema: [{
+            type: Object,
+            schema: {
+                productId: String,
+                quantity: Number
+            }
+        }]
+    }
     
 })
 
-const User = mongoose.model("user", userSchema);
+const User = dynamoose.model("ecommerce-test-users", userSchema);
 module.exports = User;

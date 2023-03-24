@@ -1,19 +1,18 @@
 const cartService = require('../services/cartService');
-const {default: mongoose } = require('mongoose');
 
 
 test('findProductIdIndexInCart', () => {
     var cart = [
         {
-            productId: new mongoose.Types.ObjectId("test12345678"), 
+            productId: "test12345678", 
             quantity: 3
         },
         {
-            productId: new mongoose.Types.ObjectId("test34567891"), 
+            productId: "test34567891", 
             quantity: 8
         }
     ];
-    var productId = "746573743334353637383931";
+    var productId = "test34567891";
 
     var productInCartIndex = cartService.findProductIdIndexInCart(cart, productId);
 
@@ -32,11 +31,11 @@ test('findProductIdIndexInCart - Empty cart', () => {
 test('findProductIdIndexInCart - ProductNotExists', () => {
     var cart = [
         {
-            productId: new mongoose.Types.ObjectId("test12345678"), 
+            productId: "test12345678", 
             quantity: 3
         },
         {
-            productId: new mongoose.Types.ObjectId("test34567891"), 
+            productId: "test34567891", 
             quantity: 8
         }
     ];
@@ -49,29 +48,29 @@ test('findProductIdIndexInCart - ProductNotExists', () => {
 
 test('addOrUpdateElementToCart', () => {
     var cart = [];
-    var productId = new mongoose.Types.ObjectId("test12345678");
+    var productId = "test12345678";
     var quantity = 3;
 
     cart = cartService.addProductIdToCart(cart, productId, quantity);
     var valid = false;
-    valid = (cart[0].productId == "746573743132333435363738" && cart[0].quantity == 3);
+    valid = (cart[0].productId == "test12345678" && cart[0].quantity == 3);
 
     expect(valid).toBe(true);
 });
 
 test('addOrUpdateElementToCart withoutQuantity', () => {
     var cart = [];
-    var productId = new mongoose.Types.ObjectId("test12345678");
+    var productId = "test12345678";
 
     cart = cartService.addProductIdToCart(cart, productId);
     var valid = false;
-    valid = (cart[0].productId == "746573743132333435363738" && cart[0].quantity == 1);
+    valid = (cart[0].productId == "test12345678" && cart[0].quantity == 1);
 
     expect(valid).toBe(true);
 });
 
 test('addOrUpdateElementToCart existingProduct', () => {
-    var productId = new mongoose.Types.ObjectId("test12345678");
+    var productId = "test12345678";
     var cart = [
         {
             productId: productId, 
@@ -81,7 +80,7 @@ test('addOrUpdateElementToCart existingProduct', () => {
 
     cart = cartService.addProductIdToCart(cart, productId);
     var valid = false;
-    valid = (cart[0].productId == "746573743132333435363738" && cart[0].quantity == 4);
+    valid = (cart[0].productId == "test12345678" && cart[0].quantity == 4);
 
     expect(valid).toBe(true);
 });

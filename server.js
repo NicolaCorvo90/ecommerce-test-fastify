@@ -1,5 +1,4 @@
 const fastify = require('fastify')({logger: true});
-require('./connection/config');
 const userService = require('./services/userService');
 
 fastify
@@ -21,7 +20,7 @@ fastify
           reply.code(403).send();
           return;
         }
-        request.user_id = user._id.toString();
+        request.userid = user.id.toString();
       } else {
         reply.code(401).send();
         return;
@@ -42,7 +41,7 @@ fastify
     const {username, password} = request.body;
 
     const user = await userService.searchUser(username, password);
-    request.user_id = user._id.toString();
+    request.userid = user.id.toString();
   } catch(error) {
     reply.code(400).send(error.message);
     return;

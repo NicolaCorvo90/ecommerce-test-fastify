@@ -27,7 +27,7 @@ const userService = {
         if(await userRepository.findByUsername(user.username)) {
             throw new Error("Duplicated username");
         }
-
+        
         user.password = await bcrypt.hash(user.password, 12);
         
         return userRepository.save(user);
@@ -82,7 +82,7 @@ const userService = {
             throw new Error("Invalid password");
         }
 
-        if(!user._id) {
+        if(!user.id) {
             throw new Error("Invalid user");
         }
 
@@ -102,7 +102,7 @@ const userService = {
 
         var user = null;
         try {
-            user = await userService.findById(payload.user_id);
+            user = await userService.findById(payload.userid);
         } catch(error) {
             throw new Error("Error loading user from token");
         }
