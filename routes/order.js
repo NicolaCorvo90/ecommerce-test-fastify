@@ -4,12 +4,12 @@ const orderRoutes = (fastify, option, done) => {
   
     fastify.post("/api/order/createOrder", { preHandler: fastify.auth([ fastify.asyncVerifyJWT(0) ]) }, async (request, reply) => {
         try {
-            if(!request.user_id) {
+            if(!request.userid) {
                 reply.code(500).send();
                 return;
             }
         
-            if(await orderService.createOrder(request.user_id)) {
+            if(await orderService.createOrder(request.userid)) {
                 reply.code(201).send();
             } else {
                 reply.code(400).send();

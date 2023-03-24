@@ -6,15 +6,15 @@ const orderService = {
     findAll: () => {
         return orderRepository.findAll();
     },
-    createOrder: async (user_id) => {
-        if(!user_id) {
-            throw new Error("Empty user_id");
+    createOrder: async (userid) => {
+        if(!userid) {
+            throw new Error("Empty userid");
         }
 
-        const user = await userService.findById(user_id);
+        const user = await userService.findById(userid);
 
         var order = {
-            userId: user._id,
+            userId: user.id,
             products: user.cart
         }
 
@@ -24,7 +24,7 @@ const orderService = {
         } else {
             await orderRepository.save(order);
             await module.exports.updateProducts(order);
-            await userService.deleteCart(user_id);
+            await userService.deleteCart(userid);
         }
 
         return true;

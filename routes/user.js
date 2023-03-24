@@ -83,12 +83,12 @@ const userRoutes = (fastify, option, done) => {
 
   fastify.post("/api/users/login", { preHandler: fastify.auth([ fastify.verifyUsernameAndPassword ]) }, async (request, reply) => {
     try {
-      if(!request.user_id) {
+      if(!request.userid) {
         reply.code(500).send();
         return;
       }
 
-      const token = jwtService.generateToken({_id: request.user_id});
+      const token = jwtService.generateToken({id: request.userid});
       reply.send(token);
     } catch(error) {
       reply.code(400).send(error.message);
@@ -97,11 +97,11 @@ const userRoutes = (fastify, option, done) => {
 
   fastify.get("/api/users/me", { preHandler: fastify.auth([ fastify.asyncVerifyJWT(0) ]) }, async (request, reply) => {
     try {
-      if(!request.user_id) {
+      if(!request.userid) {
         reply.code(500).send();
         return;
       }
-      const user = await userService.findById(request.user_id);
+      const user = await userService.findById(request.userid);
       if(user) {
         reply.send(user);
       } else {

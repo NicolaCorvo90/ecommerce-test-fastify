@@ -6,11 +6,11 @@ const jwtService = {
         if(!user) {
             throw new Error("Empty user");
         }
-        if(!user._id) {
+        if(!user.id) {
             throw new Error("Empty user id");
         }
 
-        const payload = { user_id: user._id };
+        const payload = { userid: user.id };
         var token = "";
         try {
             token = jwt.sign({payload}, process.env.SECRET_KEY);
