@@ -1,11 +1,10 @@
 {
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.298.0",
     "@fastify/auth": "^4.2.0",
-    "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "dynamoose": "^3.1.0",
     "fastify": "^4.14.1",
-    "jsonwebtoken": "^9.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

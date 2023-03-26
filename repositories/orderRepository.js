@@ -5,6 +5,9 @@ const orderRepository = {
     findAll: async () => {
         return await Order.scan().exec();
     },
+    findByUserId: async (userId) => {
+        return await Order.scan("userId").eq(userId).exec();
+    },
     save: async (order) => {
         if(order) {
             var order = new Order({

@@ -7,7 +7,11 @@ const productRepository = {
     },
     findById: async (id) => {
         if(id) {
-            return await Product.get(id);
+            var product = await Product.get(id);
+            if(product == null) {
+                throw new Error("Product not found.");
+            }
+            return product;
         } else {
             throw new Error("Id not provided");
         }

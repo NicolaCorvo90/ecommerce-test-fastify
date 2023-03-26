@@ -1,5 +1,5 @@
 const fastify = require('fastify')({logger: true});
-const userService = require('./services/userService');
+const cognitoService = require('./services/cognitoService');
 
 fastify
 .decorate('asyncVerifyJWT', function (scope) {
@@ -14,13 +14,14 @@ fastify
         return;
       }
       const token = request.headers.authorization.split(" ")[1];
-      const user = await userService.getUserFromToken(token);
-      if(user) {
-        if(scope && !user.isAdmin) {
+
+      var userInfo = await cognitoService.getUserInfo(token);
+      if(userInfo) {
+        if(scope && !userInfo.isAdmin) {
           reply.code(403).send();
           return;
         }
-        request.userid = user.id.toString();
+        request.userId = userInfo.userId;
       } else {
         reply.code(401).send();
         return;
@@ -29,22 +30,6 @@ fastify
       reply.code(401).send();
       return;
     }
-  }
-})
-.decorate('verifyUsernameAndPassword', async function (request, reply, done) {
-  try {
-    if(!request.body) {
-      reply.code(400).send();
-      return;
-    }
-
-    const {username, password} = request.body;
-
-    const user = await userService.searchUser(username, password);
-    request.userid = user.id.toString();
-  } catch(error) {
-    reply.code(400).send(error.message);
-    return;
   }
 })
 .register(require('@fastify/auth'));

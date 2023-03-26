@@ -1,4 +1,4 @@
-const userService = require('../services/userService');
+const userCartService = require('../services/userCartService');
 
 const cartRoutes = (fastify, option, done) => {
   
@@ -9,15 +9,20 @@ const cartRoutes = (fastify, option, done) => {
                 return;
             }
 
-            if(!request.userid) {
+            if(!request.userId) {
                 reply.code(500).send();
                 return;
             }
         
             const { productId, quantity } = request.body;
 
-            if(await userService.addProductToCart(request.userid, productId, quantity)) {
-                reply.code(201).send();
+            var result = await userCartService.addProduct(request.userId, productId, quantity);
+            if(result.result) {
+                if(result.insert) {
+                    reply.code(201).send();
+                } else {
+                    reply.code(204).send();
+                }
             } else {
                 reply.code(400).send();
             }

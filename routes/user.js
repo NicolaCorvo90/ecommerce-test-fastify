@@ -1,31 +1,22 @@
-const jwtService = require('../services/jwtService');
-const userService = require('../services/userService');
+const cognitoService = require('../services/cognitoService');
 
 const userRoutes = (fastify, option, done) => {
-  
-  fastify.get("/api/users", { preHandler: fastify.auth([ fastify.asyncVerifyJWT(1) ]) }, async (request, reply) => {
-    try {
-      reply.send(await userService.findAll());
-    } catch (error) {
-      reply.code(400).send(error.message);
-    }
-  });
 
   fastify.post("/api/users", async (request, reply) => {
+    if(!request.body) {
+      reply.code(400).send();
+      return;
+    }
+
+    const { username, email, password } = request.body;
+    const user = {
+      "username": username,
+      "email": email,
+      "password": password
+    };
+
     try {
-      if(!request.body) {
-        reply.code(400).send();
-        return;
-      }
-
-      const { username, password, isAdmin } = request.body;
-      const user = {
-        "username": username,
-        "password": password,
-        "isAdmin": isAdmin
-      };
-
-      if(await userService.save(user)) {
+      if(await cognitoService.signUp(user)) {
         reply.code(201).send();
       } else {
         reply.code(400).send();
@@ -35,83 +26,26 @@ const userRoutes = (fastify, option, done) => {
     }
   });
 
-  fastify.patch("/api/users/:id", { preHandler: fastify.auth([ fastify.asyncVerifyJWT(0) ]) }, async (request, reply) => {
-    try {
-      if(!request.params) {
-        reply.code(400).send();
-        return;
-      }
-      if(!request.body) {
-        reply.code(400).send();
-        return;
-      }
-
-      const id = request.params.id;
-      const { username, password, isAdmin } = request.body;
-      const user = {
-        "username": username,
-        "password": password,
-        "isAdmin": isAdmin
-      };
-      if(await userService.update(id, user)) {
-        reply.code(204).send();
-      } else {
-        reply.code(400).send();
-      }
-    } catch (error) {
-      reply.code(400).send(error.message);
+  fastify.post("/api/users/login", async (request, reply) => {
+    if(!request.body) {
+      reply.code(400).send();
+      return;
     }
-  });
 
-  fastify.delete("/api/users/:id", { preHandler: fastify.auth([ fastify.asyncVerifyJWT(0) ]) }, async (request, reply) => {
-    try {
-      if(!request.params) {
-        reply.code(400).send();
-        return;
-      }
+    const {username, password} = request.body;
 
-      const id = request.params.id;
-      if(await userService.delete(id)) {
-        reply.code(204).send();
-      } else {
-        reply.code(400).send();
-      }
-    } catch (error) {
-      reply.code(400).send(error.message);
+    var user = {
+      username: username,
+      password: password
     }
-  });
 
-  fastify.post("/api/users/login", { preHandler: fastify.auth([ fastify.verifyUsernameAndPassword ]) }, async (request, reply) => {
     try {
-      if(!request.userid) {
-        reply.code(500).send();
-        return;
-      }
-
-      const token = jwtService.generateToken({id: request.userid});
+      var token = await cognitoService.login(user);
       reply.send(token);
     } catch(error) {
-      reply.code(400).send(error.message);
+      reply.code(404).send();
     }
   });
-
-  fastify.get("/api/users/me", { preHandler: fastify.auth([ fastify.asyncVerifyJWT(0) ]) }, async (request, reply) => {
-    try {
-      if(!request.userid) {
-        reply.code(500).send();
-        return;
-      }
-      const user = await userService.findById(request.userid);
-      if(user) {
-        reply.send(user);
-      } else {
-        reply.code(401).send();
-      }
-    } catch(error) {
-      reply.code(400).send(error.message);
-    }
-  });
-
 
   done();
 }
