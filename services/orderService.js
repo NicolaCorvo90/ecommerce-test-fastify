@@ -1,21 +1,28 @@
 const orderRepository = require('../repositories/orderRepository');
-const userService = require('./userService');
+const userCartService = require('./userCartService');
 const productService = require('./productService');
 
 const orderService = {
     findAll: () => {
         return orderRepository.findAll();
     },
+    findOrdersByUserId: (userid) => {
+        if(!userid) {
+            throw new Error("Empty userid");
+        }
+        
+        return orderRepository.findByUserId(userid);
+    },
     createOrder: async (userid) => {
         if(!userid) {
             throw new Error("Empty userid");
         }
 
-        const user = await userService.findById(userid);
+        const userCart = await userCartService.findById(userid);
 
         var order = {
-            userId: user.id,
-            products: user.cart
+            userId: userCart.userId,
+            products: userCart.cart
         }
 
         var valid = await module.exports.validateOrder(order);
@@ -24,7 +31,7 @@ const orderService = {
         } else {
             await orderRepository.save(order);
             await module.exports.updateProducts(order);
-            await userService.deleteCart(userid);
+            await userCartService.delete(userid);
         }
 
         return true;

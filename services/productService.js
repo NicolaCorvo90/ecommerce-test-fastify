@@ -40,7 +40,6 @@ const productService = {
         if(!product) {
             throw new Error("Empty product");
         }
-        console.log(product);
         if(!product.name && !product.price && !product.availableQuantity && !product.minPurchasableQuantity && !product.maxPurchasableQuantity) {
             throw new Error("No field to update");
         }

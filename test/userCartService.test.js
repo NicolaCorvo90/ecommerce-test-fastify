@@ -1,4 +1,4 @@
-const cartService = require('../services/cartService');
+const userCartService = require('../services/userCartService');
 
 
 test('findProductIdIndexInCart', () => {
@@ -14,7 +14,7 @@ test('findProductIdIndexInCart', () => {
     ];
     var productId = "test34567891";
 
-    var productInCartIndex = cartService.findProductIdIndexInCart(cart, productId);
+    var productInCartIndex = userCartService.findProductIdIndexInCart(cart, productId);
 
     expect(productInCartIndex).toBe(1);
 });
@@ -23,7 +23,7 @@ test('findProductIdIndexInCart - Empty cart', () => {
     var cart = [];
     var productId = "123455";
 
-    var productInCartIndex = cartService.findProductIdIndexInCart(cart, productId);
+    var productInCartIndex = userCartService.findProductIdIndexInCart(cart, productId);
 
     expect(productInCartIndex).toBe(-1);
 });
@@ -41,7 +41,7 @@ test('findProductIdIndexInCart - ProductNotExists', () => {
     ];
     var productId = "123455";
 
-    var productInCartIndex = cartService.findProductIdIndexInCart(cart, productId);
+    var productInCartIndex = userCartService.findProductIdIndexInCart(cart, productId);
 
     expect(productInCartIndex).toBe(-1);
 });
@@ -51,7 +51,7 @@ test('addOrUpdateElementToCart', () => {
     var productId = "test12345678";
     var quantity = 3;
 
-    cart = cartService.addProductIdToCart(cart, productId, quantity);
+    cart = userCartService.addProductIdToCart(cart, productId, quantity);
     var valid = false;
     valid = (cart[0].productId == "test12345678" && cart[0].quantity == 3);
 
@@ -62,7 +62,7 @@ test('addOrUpdateElementToCart withoutQuantity', () => {
     var cart = [];
     var productId = "test12345678";
 
-    cart = cartService.addProductIdToCart(cart, productId);
+    cart = userCartService.addProductIdToCart(cart, productId);
     var valid = false;
     valid = (cart[0].productId == "test12345678" && cart[0].quantity == 1);
 
@@ -78,7 +78,7 @@ test('addOrUpdateElementToCart existingProduct', () => {
         }
     ];
 
-    cart = cartService.addProductIdToCart(cart, productId);
+    cart = userCartService.addProductIdToCart(cart, productId);
     var valid = false;
     valid = (cart[0].productId == "test12345678" && cart[0].quantity == 4);
 
