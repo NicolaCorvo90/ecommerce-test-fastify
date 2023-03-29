@@ -2,12 +2,21 @@ const cognitoService = require('../services/cognitoService');
 
 const userRoutes = (fastify, option, done) => {
 
-  fastify.post("/api/users", async (request, reply) => {
-    if(!request.body) {
-      reply.code(400).send();
-      return;
+  fastify.post("/api/users", 
+  {
+    schema: {
+      body: {
+        type: 'object',
+        properties: {
+          username: { type: 'string', minLength: 1 },
+          email: { type: 'string', minLength: 1 },
+          password: { type: 'string', minLength: 1 },
+        },
+        required: ['username', 'email', 'password']
+      }
     }
-
+  },
+  async (request, reply) => {
     const { username, email, password } = request.body;
     const user = {
       "username": username,
@@ -26,12 +35,19 @@ const userRoutes = (fastify, option, done) => {
     }
   });
 
-  fastify.post("/api/users/login", async (request, reply) => {
-    if(!request.body) {
-      reply.code(400).send();
-      return;
+  fastify.post("/api/users/login", 
+  {
+    schema: {
+      body: {
+        type: 'object',
+        properties: {
+          username: { type: 'string', minLength: 1 },
+          password: { type: 'string', minLength: 1 },
+        },
+        required: ['username', 'password']
+      }
     }
-
+  }, async (request, reply) => {
     const {username, password} = request.body;
 
     var user = {

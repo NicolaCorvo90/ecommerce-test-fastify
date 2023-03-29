@@ -2,13 +2,20 @@ const userCartService = require('../services/userCartService');
 
 const cartRoutes = (fastify, option, done) => {
   
-    fastify.post("/api/cart/addProductToCart", { preHandler: fastify.auth([ fastify.asyncVerifyJWT(0) ]) }, async (request, reply) => {
+    fastify.post("/api/cart/addProductToCart", { 
+        preHandler: fastify.auth([ fastify.asyncVerifyJWT(0) ]),
+        schema: {
+            body: {
+                type: 'object',
+                properties: {
+                  productId: { type: 'string', minLength: 1 },
+                  quantity: { type: 'number', minimum: 1 }
+                },
+                required: ['productId', 'quantity']
+              }
+        }
+    }, async (request, reply) => {
         try {
-            if(!request.body) {
-                reply.code(400).send();
-                return;
-            }
-
             if(!request.userId) {
                 reply.code(500).send();
                 return;
